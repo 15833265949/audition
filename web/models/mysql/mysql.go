@@ -19,7 +19,7 @@ func GetConnString() string {
 		ip := "127.0.0.1"
 		port := "3306"
 		username := "root"
-		passwd := "111111"
+		passwd := "111"
 		dbname := "audition"
 		addr = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&loc=Local&parseTime=true", username, passwd, ip, port, dbname)
 	}

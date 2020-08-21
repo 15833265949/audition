@@ -8,6 +8,8 @@ import (
 
 type User struct {
 	gorm.Model
+	UserName string `gorm:"size:30"`
+	Account  string `gorm:"size:30"`
 	Password string `gorm:"size:255"`
 	Email    string `gorm:"size:30"`
 	NickName string `gorm:"size:20"`
@@ -20,34 +22,36 @@ func GetBoolByName(name string) bool {
 		logs.Error(err)
 	}
 	count := 0
-	db.Debug().Model(&User{}).Where("nick_name = ?",name).Count(&count)
-	if count > 0{
+	db.Debug().Model(&User{}).Where("account = ?", name).Count(&count)
+	if count > 0 {
 		return false
-	}else {
+	} else {
 		return true
 	}
 }
 
-func GetUserByName(name string) *User {
+func GetUserByName(account string) *User {
 	db, err := mysql.GetConnect()
 	if err != nil {
 		logs.Error(err)
 	}
 	user := &User{}
-	db.Debug().Where("nick_name = ?",name).First(user)
+	db.Debug().Where("account = ?", account).First(user)
 	return user
 }
 
-func InsertUser(name ,password,email,phone string){
+func InsertUser(name,account, password, email, nickname, phone string) {
 	db, err := mysql.GetConnect()
 	if err != nil {
 		logs.Error(err)
 	}
 	user := User{
-		NickName: name,
+		UserName: name,
+		Account: account,
 		Password: password,
-		Email: email,
-		Phone: phone,
+		Email:    email,
+		NickName: nickname,
+		Phone:    phone,
 	}
 
 	db.Debug().Create(&user)

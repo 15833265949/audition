@@ -7,54 +7,51 @@ import (
 )
 
 func Registered(c *gin.Context)  {
-	rsp := &utils.Rsp{}
-	nickName:= c.Query("name")
+	nickName:= c.Query("nickname")
 	pwd := c.Query("password")
+	userName := c.Query("username")
+	account := c.Query("account")
 
 	if pwd == ""{
 		utils.WriteRsp(c,1,"密码为空，请输入密码！",nil)
 		return
 	}
-	if nickName == ""{
-		utils.WriteRsp(c,1,"用户名为空，请输入用户名！",nil)
+	if account == ""{
+		utils.WriteRsp(c,1,"账号为空，请输入账号！",nil)
 		return
 	}
 
 	email := c.PostForm("email")
 	phone := c.PostForm("phone")
 
-	b := models.GetBoolByName(nickName)
+	b := models.GetBoolByName(account)
 	if !b {
-		rsp.Code=1
-		rsp.Msg = "用户名已存在！"
-		c.JSON(200,gin.H{
-			"data":rsp,
-		})
+		utils.WriteRsp(c,1,"账号已存在！",nil)
 		return
 	}
 
-	models.InsertUser(nickName,pwd,email,phone)
+	models.InsertUser(userName,account,pwd,email,nickName,phone)
 	utils.WriteRsp(c,0,"注册成功！",nil)
 
 }
 
 func Login(c *gin.Context){
-	nickName:= c.Query("name")
+	account:= c.Query("account")
 	pwd := c.Query("password")
 
 	if pwd == ""{
 		utils.WriteRsp(c,1,"密码为空，请输入密码！",nil)
 		return
 	}
-	if nickName == ""{
-		utils.WriteRsp(c,1,"用户名为空，请输入用户名！",nil)
+	if account == ""{
+		utils.WriteRsp(c,1,"账号为空，请输入账号！",nil)
 		return
 	}
 
-	user := models.GetUserByName(nickName)
-	if user != nil && user.NickName != "" && user.Password != ""{
+	user := models.GetUserByName(account)
+	if user != nil && user.Account != "" && user.Password != ""{
 		if pwd == user.Password{
-			utils.WriteRsp(c,0,"登录成功",nil)
+			utils.WriteRsp(c,0,"登录成功",user)
 		}else {
 			utils.WriteRsp(c,1,"密码错误",nil)
 		}
